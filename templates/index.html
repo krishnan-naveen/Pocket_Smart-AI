@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}PocketSmart AI - Smart Budget Recommendations{% endblock %}
+{% block content %}
+<section class="hero">
+  <h1>Spend smarter. Every rupee planned.</h1>
+  <p>Tell PocketSmart AI your budget and needs. Gemini picks the best-fit products and shows exactly where every rupee goes.</p>
+  <div class="hero-actions">
+    {% if user %}
+      <a class="btn" href="/dashboard">Open my dashboard</a>
+    {% else %}
+      <a class="btn" href="/register">Get started free</a>
+      <a class="btn btn-ghost" href="/login">Login</a>
+    {% endif %}
+  </div>
+</section>
+
+<section>
+  <h2>Choose a planner</h2>
+  <div class="grid three">
+    <a class="card planner-card" href="/home-planner">
+      <div class="emoji" aria-hidden="true">🛋️</div>
+      <h3>Home Interior Planner</h3>
+      <p>Furniture, decor and lighting for your room from IKEA, Amazon, Pepperfry and more.</p>
+    </a>
+    <a class="card planner-card" href="/party-planner">
+      <div class="emoji" aria-hidden="true">🎉</div>
+      <h3>Party Planner</h3>
+      <p>Venue, food and decoration for any event, sized by your guest count.</p>
+    </a>
+    <a class="card planner-card" href="/jewelry-planner">
+      <div class="emoji" aria-hidden="true">💍</div>
+      <h3>Jewelry Planner</h3>
+      <p>Jewelry matched to your occasion and outfit &ndash; upload an outfit photo for better matches.</p>
+    </a>
+  </div>
+</section>
+
+<section>
+  <h2>How it works</h2>
+  <ol class="steps">
+    <li><strong>Enter</strong> your budget and preferences.</li>
+    <li><strong>Gemini AI</strong> chooses from a verified product list and explains each pick.</li>
+    <li><strong>PocketSmart checks</strong> the total never exceeds your budget.</li>
+    <li><strong>Save and revisit</strong> every plan in your history.</li>
+  </ol>
+</section>
+{% endblock %}

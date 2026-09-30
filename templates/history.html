@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}History - PocketSmart AI{% endblock %}
+{% block content %}
+<h1>Recommendation history</h1>
+{% if items %}
+<table class="table">
+  <thead><tr><th>#</th><th>Planner</th><th>Budget</th><th>Total</th><th>By</th><th>When (UTC)</th><th></th></tr></thead>
+  <tbody>
+  {% for h in items %}
+    <tr>
+      <td>{{ h.id }}</td><td class="cap">{{ h.category }}</td><td>{{ h.budget | inr }}</td>
+      <td>{{ h.result.total_cost | inr }}</td>
+      <td><span class="tag {{ 'ai' if h.source == 'gemini' else '' }}">{{ 'Gemini AI' if h.source == 'gemini' else 'Rule-based' }}</span></td>
+      <td>{{ h.created_at[:16] | replace('T', ' ') }}</td>
+      <td><a href="/history/{{ h.id }}">Open</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="empty">No saved recommendations yet.</p>
+{% endif %}
+{% endblock %}

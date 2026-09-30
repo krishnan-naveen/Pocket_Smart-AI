@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}Home Recommendations - PocketSmart AI{% endblock %}
+{% block content %}
+<h1>🛋️ Home Interior Recommendations</h1>
+<p class="muted">{{ req.style | title }} {{ req.room }} &middot; {{ req.quantity }} room{{ '' if req.quantity == 1 else 's' }}</p>
+{% include "_results.html" %}
+<p><a class="btn btn-ghost" href="/home-planner">Plan another</a> <a class="btn btn-ghost" href="/history-page">History</a></p>
+{% endblock %}

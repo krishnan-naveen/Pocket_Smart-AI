@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}Party Recommendations - PocketSmart AI{% endblock %}
+{% block content %}
+<h1>🎉 Party Recommendations</h1>
+<p class="muted">{{ req.event_type | title }} &middot; {{ req.guests }} guests{{ ' · vegetarian' if req.veg_only else '' }}</p>
+{% include "_results.html" %}
+<p><a class="btn btn-ghost" href="/party-planner">Plan another</a> <a class="btn btn-ghost" href="/history-page">History</a></p>
+{% endblock %}

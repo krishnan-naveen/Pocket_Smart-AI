@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Testimonials - PocketSmart AI{% endblock %}
+{% block content %}
+<h1>What users say</h1>
+<p class="muted">These are sample stories written for this demo project.</p>
+<div class="grid three">
+  {% for t in testimonials %}
+  <figure class="card">
+    <span class="tag">{{ t.tag }}</span>
+    <blockquote>&ldquo;{{ t.text }}&rdquo;</blockquote>
+    <figcaption>{{ t.name }}</figcaption>
+  </figure>
+  {% endfor %}
+</div>
+{% endblock %}

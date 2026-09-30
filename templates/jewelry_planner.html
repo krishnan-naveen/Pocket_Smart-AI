@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Jewelry Planner - PocketSmart AI{% endblock %}
+{% block content %}
+<div class="narrow card">
+  <h1>💍 Jewelry Planner</h1>
+  <p class="muted">Describe the occasion and outfit. Optionally upload a photo of the outfit.</p>
+  <div id="form-error" class="alert error" role="alert" hidden></div>
+  <form class="form planner-form" data-endpoint="/generate-jewelry" data-mode="multipart">
+    <label>Occasion
+      <select name="occasion" required>
+        {% for o in occasions %}<option value="{{ o }}">{{ o | title }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Style
+      <select name="style">
+        {% for s in styles %}<option value="{{ s }}">{{ s | title }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Outfit (text)
+      <input name="outfit" maxlength="300" placeholder="e.g. emerald green silk saree with gold border">
+    </label>
+    <label>Outfit image (optional, JPG/PNG/WEBP, max 5 MB)
+      <input type="file" name="image" accept="image/jpeg,image/png,image/webp">
+    </label>
+    <label>Total budget (₹)
+      <input type="number" name="budget" min="500" max="10000000" step="100" placeholder="e.g. 8000" required>
+    </label>
+    <label>Anything else? (optional)
+      <textarea name="notes" maxlength="500" rows="2" placeholder="e.g. sensitive skin, prefer lightweight"></textarea>
+    </label>
+    <button class="btn" type="submit">Get recommendations</button>
+  </form>
+  <div class="loading" hidden>Asking Gemini... this can take up to 20 seconds.</div>
+</div>
+{% endblock %}
