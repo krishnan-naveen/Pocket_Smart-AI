@@ -43,6 +43,7 @@ Naan Mudhalvan &middot; Google Cloud Generative AI track
 
 ---
 
+<!-- SECTION: Project overview — explains the problem, the three planners, and the core design principle -->
 ## 1. What is PocketSmart AI?
 
 PocketSmart AI is a web application that turns a budget and a few preferences into a concrete shopping plan.
@@ -57,6 +58,7 @@ Planning a purchase usually means opening many shopping sites, comparing prices,
 
 The design idea is simple: **AI proposes, code disposes.** Google Gemini chooses from a fixed list of candidate products and explains each choice. The backend then verifies the answer (real products only, total within budget). If Gemini is unavailable, a built-in rule-based engine produces the plan instead, so the user always gets a valid result.
 
+<!-- SECTION: Demo — links to the walkthrough video and screenshots folder -->
 ## 2. Demo
 
 - Walkthrough video: [`PocketSmart_Demo.mp4`](PocketSmart_Demo.mp4) (register, login, all three planners, validation, history, API docs, logout).
@@ -64,6 +66,7 @@ The design idea is simple: **AI proposes, code disposes.** Google Gemini chooses
 
 > The bundled video was recorded in an environment without Gemini access, so it shows the rule-based fallback badge. With a valid API key the result badge reads **Gemini AI** and shows the model used.
 
+<!-- SECTION: Feature list grouped by accounts/sessions, planners, AI reliability, and UX -->
 ## 3. Features
 
 **Accounts and sessions**
@@ -89,6 +92,7 @@ The design idea is simple: **AI proposes, code disposes.** Google Gemini chooses
 - Dashboard and full recommendation history; reopen any past plan
 - Clear error messages for bad input; responsive layout and dark-mode aware styling
 
+<!-- SECTION: Architecture flow — Mermaid diagram + 7-step walkthrough of one API request -->
 ## 4. How it works
 
 ```mermaid
@@ -115,6 +119,7 @@ Step by step for one request, for example `POST /generate-home`:
 6. **Save.** The request and the result are stored in the user's history.
 7. **Show.** The browser opens `/history/{id}`, which renders the result as cards.
 
+<!-- SECTION: Tech stack table — language, framework, AI, DB, auth, validation, testing -->
 ## 5. Tech stack
 
 | Layer | Technology | Purpose |
@@ -129,6 +134,7 @@ Step by step for one request, for example `POST /generate-home`:
 | Validation | Pydantic, Pillow | Input models and image checks |
 | Testing | pytest, httpx | 30 automated tests |
 
+<!-- SECTION: Directory tree with one-line purpose for every file -->
 ## 6. Project structure
 
 ```
@@ -158,14 +164,15 @@ PocketSmart-AI/
 └── *.md                     # Project documentation (see section 19)
 ```
 
+<!-- SECTION: Quick start — 6-step bash commands: clone, venv, install, configure, check Gemini, run -->
 ## 7. Quick start
 
 Requirements: Python 3.10 or newer, and a free Gemini API key from [Google AI Studio](https://aistudio.google.com/apikey).
 
 ```bash
 # 1. Get the code and enter the folder
-git clone https://github.com/Mukilkani23/PocketSmart-AI.git
-cd PocketSmart-AI
+git clone https://github.com/krishnan-naveen/Pocket_Smart-AI.git
+cd Pocket_Smart-AI
 
 # 2. Create and activate a virtual environment
 python -m venv .venv
@@ -190,6 +197,7 @@ Open **http://127.0.0.1:8000**. Interactive API docs are at **http://127.0.0.1:8
 
 > On Windows machines with restricted policies, use `python -m pip ...` instead of `pip ...`.
 
+<!-- SECTION: Environment variables — copy .env.example to .env, set GEMINI_API_KEY and SECRET_KEY -->
 ## 8. Configuration
 
 Copy `.env.example` to `.env`. The `.env` file is in `.gitignore`; never commit it.
@@ -197,14 +205,15 @@ Copy `.env.example` to `.env`. The `.env` file is in `.gitignore`; never commit 
 | Variable | Meaning | Default |
 |---|---|---|
 | `GEMINI_API_KEY` | Your Google AI Studio API key. If empty, the app runs with rule-based recommendations only | empty |
-| `GEMINI_MODEL` | First model to try | `gemini-3.5-flash` |
-| `GEMINI_FALLBACK_MODELS` | Comma-separated models tried next | `gemini-3.5-flash-lite,gemini-2.5-flash` |
+| `GEMINI_MODEL` | First model to try | `gemini-2.0-flash` |
+| `GEMINI_FALLBACK_MODELS` | Comma-separated models tried next | `gemini-2.0-flash-lite,gemini-1.5-flash` |
 | `SECRET_KEY` | Secret used to sign login tokens. Use a long random string | insecure dev value |
 | `ACCESS_TOKEN_EXPIRE_MINUTES` | Login lifetime | `120` |
 | `DATABASE_PATH` | SQLite file location | `pocketsmart.db` |
 
 Google renames and retires models regularly. If a model stops working, pick a current one from the [models page](https://ai.google.dev/gemini-api/docs/models) and update `GEMINI_MODEL`.
 
+<!-- SECTION: End-user guide — register, open a planner, read results, sort/filter, history -->
 ## 9. Using the app
 
 1. **Register** an account, then **log in**.
@@ -221,6 +230,7 @@ Example inputs to try:
 | Party | Birthday, 30 guests, ₹40,000, veg only | Venue + veg buffet (price × 30) + decor within budget |
 | Jewelry | Wedding, traditional, green silk saree photo, ₹9,000 | An outfit analysis and matching pieces within budget |
 
+<!-- SECTION: Full REST API table + curl examples + JSON response shape -->
 ## 10. API reference
 
 Protected endpoints need a login cookie or an `Authorization: Bearer <token>` header. Get a token from `/token`.
@@ -277,6 +287,7 @@ Response shape (abridged):
 
 `source` is `gemini` or `fallback`. When it is `fallback`, `warning` explains why.
 
+<!-- SECTION: Gemini integration details — prompt design, closed candidate list, defensive parsing, model fallback, verification -->
 ## 11. The AI layer in depth
 
 **Service.** `app/gemini_service.py` wraps the Google Gen AI SDK (`google-genai`). It sends a text prompt, plus the image for jewelry requests, and asks for `application/json` at temperature 0.4.
@@ -297,6 +308,7 @@ Response shape (abridged):
 
 **Verification** (`planners._verify_picks`): unknown ids removed, duplicates removed, and items trimmed from the end until the total fits the budget.
 
+<!-- SECTION: Rule-based engine used when Gemini is unavailable — greedy selection with relevance ranking -->
 ## 12. The budget engine (fallback)
 
 When Gemini is unavailable, `planners.rule_based_pick` builds a plan deterministically:
@@ -305,6 +317,7 @@ When Gemini is unavailable, `planners.rule_based_pick` builds a plan determinist
 - **Party:** reserve up to 35% of the budget for the venue and up to 55% for food (food cost = price × guests), pick the best options that fit those shares, then add decor. Venues must have capacity for the guest count. Veg-only removes non-veg options.
 - **Home quantity:** selection uses `budget ÷ rooms`; displayed cost is multiplied back by the number of rooms.
 
+<!-- SECTION: SQLite schema — users and history tables, parameterised queries, per-user isolation -->
 ## 13. Database
 
 SQLite file created automatically on first start.
@@ -316,6 +329,7 @@ history (id, user_id → users.id, category, budget, request_json, result_json, 
 
 All queries use parameter placeholders (no string-built SQL). History queries always filter by the logged-in `user_id`, so users cannot open each other's plans. A test covers this.
 
+<!-- SECTION: Security measures — PBKDF2 passwords, HttpOnly JWT cookie, env secrets, Pillow image validation, CORS, Jinja2 auto-escaping -->
 ## 14. Security
 
 - Passwords: random 16-byte salt, PBKDF2-HMAC-SHA256, 200,000 rounds, constant-time comparison
@@ -327,6 +341,7 @@ All queries use parameter placeholders (no string-built SQL). History queries al
 
 For a production deployment you would also add HTTPS with `Secure` cookies, CSRF protection for forms, rate limiting, and a managed secret store.
 
+<!-- SECTION: Test suite — 30 pytest tests covering auth, planners, Gemini fakes, history isolation; scripts/test_gemini.py for live check -->
 ## 15. Testing
 
 ```bash
@@ -336,13 +351,14 @@ python scripts/test_gemini.py   # live Gemini check: one text prompt, one image+
 
 The automated tests cover: public pages, login redirects, registration validation and duplicates, wrong passwords, token and Bearer auth, logout, all three planners, budget limits, quantity and guest maths, veg-only filtering, image upload and rejection, invalid inputs, very low budgets, history saving and per-user isolation, and the Gemini path using fakes (valid picks, invented ids, over-budget picks, all-invalid picks, and errors). Gemini itself is replaced by a fake in tests, so they run offline and for free. `scripts/test_gemini.py` is the check that touches the real service.
 
+<!-- SECTION: Common errors and fixes — AI banner, model 404, quota, pip policy, port conflict, cookie issues -->
 ## 16. Troubleshooting
 
 | Symptom | Likely cause and fix |
 |---|---|
 | Yellow "AI service unavailable" banner | Missing or wrong key, quota reached, or retired model name. Read the message in the banner and run `python scripts/test_gemini.py` |
 | `404 model not found` in the banner | Model renamed. Update `GEMINI_MODEL` from the models page |
-| `429` / quota errors | Wait a minute, or use a lighter model such as `gemini-3.5-flash-lite` |
+| `429` / quota errors | Wait a minute, or use a lighter model such as `gemini-2.0-flash-lite` |
 | `pip` is blocked by policy (Windows) | Use `python -m pip install -r requirements.txt` |
 | `ModuleNotFoundError: app` | Run commands from the project root folder |
 | Login redirects back to login | Cookies blocked for `127.0.0.1`. Use a normal browser window |
@@ -350,6 +366,7 @@ The automated tests cover: public pages, login redirects, registration validatio
 | "Internal Server Error" on every page | Check the terminal for the traceback. Confirm `templates/` and `static/` are next to `app/` |
 | Want a clean slate | Stop the server and delete `pocketsmart.db` |
 
+<!-- SECTION: Known limitations — simulated catalog, demo-grade DB, no production hardening -->
 ## 17. Limitations
 
 - Product data and prices are **simulated** (24 home, 14 party, 14 jewelry items). Scraping real shopping sites violates their terms, so links point to real search pages instead.
@@ -357,6 +374,7 @@ The automated tests cover: public pages, login redirects, registration validatio
 - SQLite and cookie sessions suit a demo, not large-scale production.
 - Gemini's live output quality depends on the model and your quota; the app is built so that a bad answer cannot exceed the budget or invent a product.
 
+<!-- SECTION: Future improvements — live APIs, more planners, Docker, managed DB, function calling -->
 ## 18. Roadmap
 
 - Live product data through official affiliate or partner APIs, with price tracking
@@ -366,6 +384,7 @@ The automated tests cover: public pages, login redirects, registration validatio
 - Managed database (Cloud SQL or Firestore) and email verification
 - Gemini function calling / response schemas for stricter structured output
 
+<!-- SECTION: Companion Markdown files — setup, knowledge, teaching guide, demo script, slides, viva, checklist -->
 ## 19. Documentation set
 
 | File | Contents |
@@ -378,6 +397,7 @@ The automated tests cover: public pages, login redirects, registration validatio
 | [`VIVA_PREPARATION.md`](VIVA_PREPARATION.md) | Likely viva questions with answers |
 | [`REQUIREMENTS_CHECKLIST.md`](REQUIREMENTS_CHECKLIST.md) | Project requirements mapped to what was built |
 
+<!-- SECTION: Author — name, college, GitHub handle, Naan Mudhalvan track -->
 ## 20. Author
 
 **Mukilkani R P**, B.E. Computer Science and Engineering, Salem College of Engineering and Technology (Anna University).

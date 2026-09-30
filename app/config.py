@@ -15,9 +15,9 @@ def _csv(value: str) -> list[str]:
 class Settings:
     def __init__(self) -> None:
         self.gemini_api_key: str = os.getenv("GEMINI_API_KEY", "").strip()
-        self.gemini_model: str = os.getenv("GEMINI_MODEL", "gemini-3.5-flash").strip()
+        self.gemini_model: str = os.getenv("GEMINI_MODEL", "gemini-2.0-flash").strip()
         self.gemini_fallback_models: list[str] = _csv(
-            os.getenv("GEMINI_FALLBACK_MODELS", "gemini-3.5-flash-lite,gemini-2.5-flash")
+            os.getenv("GEMINI_FALLBACK_MODELS", "gemini-2.0-flash-lite,gemini-1.5-flash")
         )
         self.secret_key: str = os.getenv("SECRET_KEY", "dev-only-insecure-key-change-me")
         self.token_minutes: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "120"))
