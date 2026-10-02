@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Party Planner - PocketSmart AI{% endblock %}
+{% block content %}
+<div class="narrow card">
+  <h1>🎉 Party Planner</h1>
+  <p class="muted">Venue, food and decor sized to your guest list.</p>
+  <div id="form-error" class="alert error" role="alert" hidden></div>
+  <form class="form planner-form" data-endpoint="/generate-party" data-mode="json">
+    <label>Event type
+      <select name="event_type" required>
+        {% for e in events %}<option value="{{ e }}">{{ e | title }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Number of guests
+      <input type="number" name="guests" min="1" max="500" value="20" required>
+    </label>
+    <label>Total budget (₹)
+      <input type="number" name="budget" min="500" max="10000000" step="100" placeholder="e.g. 30000" required>
+    </label>
+    <label class="check"><input type="checkbox" name="veg_only"> Vegetarian food only</label>
+    <label>Anything else? (optional)
+      <textarea name="notes" maxlength="500" rows="3" placeholder="e.g. outdoor theme, kids attending"></textarea>
+    </label>
+    <button class="btn" type="submit">Get recommendations</button>
+  </form>
+  <div class="loading" hidden>Asking Gemini... this can take up to 20 seconds.</div>
+</div>
+{% endblock %}
